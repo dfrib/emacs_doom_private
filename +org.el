@@ -8,7 +8,8 @@
         org-tags-column -100 ; the column to the right to align tags
         org-log-done 'time ; record the time when an element was marked done/checked
         org-fontify-done-headline nil ; do not change the font of DONE items
-        org-ellipsis " ↴ ")
+        org-ellipsis " ↴ "
+        org-bullets-mode 1)
 
   ;; Custom org-capture templates
   (add-to-list 'org-capture-templates

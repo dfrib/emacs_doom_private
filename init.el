@@ -1,15 +1,47 @@
 ;;; init.el -*- lexical-binding: t; -*-
 
-;; Font setup
-(setq
-      doom-font (font-spec :family "Fira Mono" :size 14)
-      doom-variable-pitch-font (font-spec :family "Fira Sans")
-      doom-unicode-font (font-spec :family "DejaVu Sans Mono")
-      doom-big-font (font-spec :family "Fira Mono" :size 19))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Basic behaviour and appearance
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Show trailing spaces
+(setq-default show-trailing-whitespace t)
+
+;; Set tabs to indent as white spaces and set def. tab width to 4 white spaces
+(setq-default indent-tabs-mode nil)
+(setq-default tab-width 4)
+
+;; Minimalistic Emacs at startup
+(menu-bar-mode 0)
+(tool-bar-mode 0)
+(set-scroll-bar-mode nil)
 
 ;; Prevents the unstyled mode-line flash at startup
 (setq-default mode-line-format nil)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Themes & visual behaviour
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Font setup
+(setq
+      doom-font (font-spec :family "Meslo LG M DZ for Powerline" :size 30)
+      doom-variable-pitch-font (font-spec :family "Meslo LG M DZ for Powerline")
+      doom-unicode-font (font-spec :family "DejaVu Sans Mono")
+      doom-big-font (font-spec :family "Meslo LG M DZ for Powerline" :size 40))
+
+;; Doom theme
+(setq doom-theme 'doom-one)
+;;(setq doom-theme 'doom-vibrant)
+;;(setq doom-theme 'doom-nord)
+;;(setq doom-theme 'doom-nova)
+;;(setq doom-theme 'doom-dracula)
+;;(setq doom-theme 'doom-solarized-light)
+;;(setq doom-theme 'doom-sourcerer)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Misc
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Select popup buffers by default
 (setq +popup-defaults
@@ -20,6 +52,9 @@
         :select t
         :ttl    5))
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Doom features
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (doom! :feature
       ;debugger          ; FIXME stepping through code, to help you add bugs
        eval              ; run code, run (also, repls)

@@ -15,11 +15,13 @@
  "C-M-q"         #'+boy/unfill-paragraph
  "S-<f1>"        #'+boy/macro-on
  "<f1>"          #'call-last-kbd-macro
+ ;; Quick access to magit-status (in addition to C-c v menu)
+ "C-x g"         #'magit-status
  ;; Editor related bindings
  "C-a"           #'doom/backward-to-bol-or-indent
  [remap newline] #'newline-and-indent
  "C-j"           #'+default/newline
- "C-S-s"         #'swiper
+ "C-s"           #'swiper
  ;; Buffer related bindings
  "C-x b"       #'persp-switch-to-buffer
  "C-x B"       #'switch-to-buffer
@@ -173,13 +175,17 @@
        [backtab]  #'+ivy/wgrep-occur      ; search/replace on results
        "C-SPC"    #'ivy-call-and-recenter ; preview
        "M-RET"    (+ivy-do-action! #'+ivy-git-grep-other-window-action))))
- "C-h b" #'counsel-descbinds
- "C-M-y" #'counsel-yank-pop
- "C-h F" #'counsel-faces
- "C-h p" #'counsel-package
- "C-h a" #'counsel-apropos
- "C-h V" #'counsel-set-variable
- "C-'"   #'counsel-imenu
+ "C-h b"   #'counsel-descbinds
+ "C-M-y"   #'counsel-yank-pop
+ "C-h F"   #'counsel-faces
+ "C-h p"   #'counsel-package
+ "C-h a"   #'counsel-apropos
+ "C-h V"   #'counsel-set-variable
+ "C-'"     #'counsel-imenu
+ "C-c g"   #'counsel-git
+ "C-c j"   #'counsel-git-grep
+ "C-c k"   #'counsel-ag
+ "C-x l"   #'counsel-locate
  ;; Repl Toggle
  "C-c C-z" #'+eval/open-repl
  ;; Company mode and the like

@@ -21,7 +21,7 @@
   (set-face-attribute 'org-ellipsis nil :foreground "#c678dd")
   ;; Face of the entire headline of a DONE line
   (set-face-attribute 'org-headline-done nil :foreground nil)
-  (cond 
+  (cond
    ;; If doom-one theme is enabled
    ((custom-theme-enabled-p 'doom-one)
       ;; Change the style of the BEGIN_SRC and RESULT blocks
