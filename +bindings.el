@@ -26,10 +26,10 @@
  "C-x b"       #'persp-switch-to-buffer
  "C-x B"       #'switch-to-buffer
  "C-x k"       #'doom/kill-this-buffer-in-all-windows
- "C-<left>"    #'+boy/window-move-left
- "C-<right>"   #'+boy/window-move-right
- "C-<up>"      #'+boy/window-move-up
- "C-<down>"    #'+boy/window-move-down
+ ;; "C-<left>"    #'+boy/window-move-left
+ ;; "C-<right>"   #'+boy/window-move-right
+ ;; "C-<up>"      #'+boy/window-move-up
+ ;; "C-<down>"    #'+boy/window-move-down
  "C-S-<left>"  #'+boy/window-move-far-left
  "C-S-<right>" #'+boy/window-move-far-right
  "C-S-<up>"    #'+boy/window-move-very-top
@@ -162,10 +162,11 @@
      "C-M-d"     #'sp-splice-sexp
      "C-M-k"     #'sp-kill-sexp
      "C-M-t"     #'sp-transpose-sexp
-     "C-<right>" #'sp-forward-slurp-sexp
-     "M-<right>" #'sp-forward-barf-sexp
-     "C-<left>"  #'sp-backward-slurp-sexp
-     "M-<left>"  #'sp-backward-barf-sexp))
+     ;; "C-<right>" #'sp-forward-slurp-sexp
+     ;; "M-<right>" #'sp-forward-barf-sexp
+     ;; "C-<left>"  #'sp-backward-slurp-sexp
+     ;; "M-<left>"  #'sp-backward-barf-sexp
+     ))
  ;; Company mode
  "C-;" #'+company/complete
  ;; Counsel
