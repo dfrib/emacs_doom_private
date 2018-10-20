@@ -80,10 +80,17 @@
    "b"     #'+boy/org-babel-hydra/body)
  ;; lsp / ccls
  (:prefix "C-c c"
+   :desc "Rename symbol"           "n" #'lsp-rename
    :desc "Peek definitions"        "d" #'lsp-ui-peek-find-definitions
    :desc "Peek references"         "r" #'lsp-ui-peek-find-references
-   :desc "Peek implementation"     "i" #'lsp-ui-peek-find-implementation
-   :desc "Traverse references"     "t" #'+mr/lsp-traverse-hydra/body)
+   :desc "Peek implementation"     "D" #'lsp-ui-peek-find-implementation
+   :desc "Traverse references"     "t" #'+mr/lsp-traverse-hydra/body
+   :desc "Call(ers) hierarchy"     "c" (λ! (ccls-call-hierarchy nil))
+   :desc "Call(ees) hierarchy"     "C" (λ! (ccls-call-hierarchy t))
+   :desc "Member hierarchy"        "m" #'ccls-member-hierarchy
+   :desc "Base inher. hierarchy"   "i" (λ! (ccls-inheritance-hierarchy nil))
+   :desc "Deriv. inher. hierarchy" "I" (λ! (ccls-inheritance-hierarchy t))
+   :desc "Toggle CCLS code lens"   "l" #'ccls-code-lens-mode)
  ;; Snippets
  (:prefix "C-c s"
    :desc "New snippet"           "n" #'yas-new-snippet
