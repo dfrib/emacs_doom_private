@@ -55,7 +55,7 @@
       ;(format +onsave)  ; automated prettiness
       ;multiple-cursors  ; editing in many places at once
       ;parinfer          ; turn lisp into python, sort of
-       rotate-text       ; cycle region at point between text candidates
+      ;rotate-text       ; cycle region at point between text candidates
 
        :emacs
        dired             ; making dired pretty [functional]
@@ -70,22 +70,23 @@
        :tools
       ;docker
       ;editorconfig      ; let someone else argue about tabs vs spaces
-       ein
-       gist              ; interacting with github gists
+      ;ein               ; tame Jupyter notebooks with emacs
+      ;gist              ; interacting with github gists
       ;macos             ; MacOS-specific commands
        make              ; run make tasks from Emacs
        magit
-       password-store    ; password manager for nerds
+      ;password-store    ; password manager for nerds
        pdf               ; pdf enhancements
       ;prodigy           ; FIXME managing external services & code builders
       ;rgb
        tmux              ; an API for interacting with tmux
-       upload            ; map local to remote projects via ssh/ftp
+      ;upload            ; map local to remote projects via ssh/ftp
       ;wakatime
 
        :lang
-      ;assembly          ; assembly for fun or debugging
+       assembly          ; assembly for fun or debugging
       ;(cc +irony +rtags); C/C++/Obj-C madness
+       cc
       ;clojure           ; java with a lisp
       ;common-lisp       ; if you've seen one lisp, you've seen them all
       ;coq               ; proofs-as-programs
@@ -128,11 +129,11 @@
       ;racket            ; a DSL for DSLs
       ;rest              ; Emacs as a REST client
       ;ruby              ; 1.step do {|i| p "Ruby is #{i.even? ? 'love' : 'life'}"}
-      ;rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
+       rust              ; Fe2O3.unwrap().unwrap().unwrap().unwrap()
       ;scala             ; java, but good
        (sh +zsh)        ; she sells (ba|z|fi)sh shells on the C xor
       ;solidity          ; do you need a blockchain? No.
-      ;swift             ; who asked for emoji variables?
+       swift             ; who asked for emoji variables?
       ;web               ; the tubes
 
        ;; Applications are complex and opinionated modules that transform Emacs
