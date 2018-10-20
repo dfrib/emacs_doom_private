@@ -12,14 +12,11 @@
 (map!
  "M-x"           #'execute-extended-command
  "C-x C-b"       #'ibuffer-list-buffers
- ;"M-d"           #'+boy/delete-word
- ;"<M-backspace>" #'+boy/backward-delete-word
- ;"C-k"           #'+boy/kill-line
- ;"S-<f1>"        #'+boy/macro-on
- ;"<f1>"          #'call-last-kbd-macro
  ;; Lookup
  "<home>"        #'+lookup/definition
  "<prior>"       #'pop-tag-mark
+ "<end>"         #'+lookup/references
+ ;"<end>"         #'lsp-ui-peek-find-references
  ;; Quick access to magit-status (in addition to C-c v menu)
  "C-x g"         #'magit-status
  ;; Editor related bindings
@@ -28,21 +25,13 @@
  "C-j"           #'+default/newline
  "C-s"           #'swiper
  ;; Buffer related bindings
- "C-x b"       #'persp-switch-to-buffer
- "C-x B"       #'switch-to-buffer
- "C-x k"       #'doom/kill-this-buffer-in-all-windows
- ;; "C-<left>"    #'+boy/window-move-left
- ;; "C-<right>"   #'+boy/window-move-right
- ;; "C-<up>"      #'+boy/window-move-up
- ;; "C-<down>"    #'+boy/window-move-down
- "C-S-<left>"  #'+boy/window-move-far-left
- "C-S-<right>" #'+boy/window-move-far-right
- "C-S-<up>"    #'+boy/window-move-very-top
- "C-S-<down>"  #'+boy/window-move-very-bottom
+ "C-x b"         #'persp-switch-to-buffer
+ "C-x B"         #'switch-to-buffer
+ "C-x k"         #'doom/kill-this-buffer-in-all-windows
  ;; Switching windows
- "C-x p"   #'+popup/other
- "C-x C-o" #'+boy/switch-to-last-window
- "C-x O"   #'switch-window-then-swap-buffer
+ "C-x p"         #'+popup/other
+ "C-x C-o"       #'+boy/switch-to-last-window
+ ;"C-x O"         #'switch-window-then-swap-buffer
  ;; Smart-forward
  "M-<up>"    #'smart-up
  "M-<down>"  #'smart-down
@@ -89,6 +78,12 @@
    ;; "e l P" #'org-beamer-export-to-pdf
    "l"     #'org-store-link
    "b"     #'+boy/org-babel-hydra/body)
+ ;; lsp / ccls
+ (:prefix "C-c c"
+   :desc "Peek definitions"        "d" #'lsp-ui-peek-find-definitions
+   :desc "Peek references"         "r" #'lsp-ui-peek-find-references
+   :desc "Peek implementation"     "i" #'lsp-ui-peek-find-implementation
+   :desc "Traverse references"     "t" #'+mr/lsp-traverse-hydra/body)
  ;; Snippets
  (:prefix "C-c s"
    :desc "New snippet"           "n" #'yas-new-snippet

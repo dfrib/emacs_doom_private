@@ -225,11 +225,6 @@ and a backlink to the function and the file."
                           :inherit org-meta-line))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Org-capture
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Personalized bindings
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (load! "+bindings")
@@ -371,6 +366,75 @@ and a backlink to the function and the file."
 (def-package! lsp-mode
   :commands (lsp-mode))
 
+;; LSP-UI
+;;https://github.com/MaskRay/Config
+(def-package! lsp-ui
+  :demand t
+  :hook (lsp-mode . lsp-ui-mode)
+  :config
+  (setq
+   ;; Disable sideline hints
+   lsp-ui-sideline-enable nil
+   lsp-ui-sideline-ignore-duplicate t
+   ;; Disable ui-doc (already present in minibuffer)
+   lsp-ui-doc-enable nil
+   lsp-ui-doc-header nil
+   lsp-ui-doc-include-signature nil
+   lsp-ui-doc-background (doom-color 'base4)
+   lsp-ui-doc-border (doom-color 'fg)
+   ;; Enable ui-peek
+   lsp-ui-peek-enable t
+   ;lsp-ui-peek-fontify t
+   lsp-ui-peek-always-show t
+   lsp-ui-peek-force-fontify nil
+   lsp-ui-peek-expand-function (lambda (xs) (mapcar #'car xs)))
+
+  ;(advice-add #'lsp-ui-doc--eldoc :override #'+my/lsp-ui-doc--eldoc)
+
+  (custom-set-faces
+   '(ccls-sem-global-variable-face ((t (:underline t :weight extra-bold))))
+   '(lsp-face-highlight-read ((t (:background "sea green"))))
+   '(lsp-face-highlight-write ((t (:background "brown4"))))
+   '(lsp-ui-sideline-current-symbol ((t (:foreground "grey38" :box nil))))
+   '(lsp-ui-sideline-symbol ((t (:foreground "grey30" :box nil)))))
+
+   ;; (map! :after lsp-ui-peek
+   ;;       :map lsp-ui-peek-mode-map
+   ;;       "h" #'lsp-ui-peek--select-prev-file
+   ;;       "j" #'lsp-ui-peek--select-next
+   ;;       "k" #'lsp-ui-peek--select-prev
+   ;;       "l" #'lsp-ui-peek--select-next-file
+   ;;       )
+
+   ;; (defhydra hydra/ref (evil-normal-state-map "x")
+   ;;   "reference"
+   ;;   ("d" lsp-ui-peek-find-definitions "next" :bind nil)
+   ;;   ("n" (-let [(i . n) (lsp-ui-find-next-reference)]
+   ;;          (if (> n 0) (message "%d/%d" i n))) "next")
+   ;;   ("p" (-let [(i . n) (lsp-ui-find-prev-reference)]
+   ;;          (if (> n 0) (message "%d/%d" i n))) "prev")
+   ;;   ("R" (-let [(i . n) (lsp-ui-find-prev-reference
+   ;;                        (lambda (x)
+   ;;                          (/= (logand (gethash "role" x 0) 8) 0)))]
+   ;;          (if (> n 0) (message "read %d/%d" i n))) "prev read" :bind nil)
+   ;;   ("r" (-let [(i . n) (lsp-ui-find-next-reference
+   ;;                        (lambda (x)
+   ;;                          (/= (logand (gethash "role" x 0) 8) 0)))]
+   ;;          (if (> n 0) (message "read %d/%d" i n))) "next read" :bind nil)
+   ;;   ("W" (-let [(i . n) (lsp-ui-find-prev-reference
+   ;;                        (lambda (x)
+   ;;                          (/= (logand (gethash "role" x 0) 16) 0)))]
+   ;;          (if (> n 0) (message "write %d/%d" i n))) "prev write" :bind nil)
+   ;;   ("w" (-let [(i . n) (lsp-ui-find-next-reference
+   ;;                        (lambda (x)
+   ;;                          (/= (logand (gethash "role" x 0) 16) 0)))]
+   ;;          (if (> n 0) (message "write %d/%d" i n))) "next write" :bind nil)
+   ;;   )
+)
+
+(require 'lsp-ui)
+(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+
 ;; LSP-Company
 (def-package! company-lsp
   :after lsp-mode)
@@ -379,6 +443,13 @@ and a backlink to the function and the file."
   (setq company-lsp-enable-snippet t)
   (setq company-lsp-cache-candidates nil)
   (setq company-lsp-async t))
+
+;; LSP-python
+(def-package! lsp-python
+  :init (add-hook! python-mode #'lsp-python-enable)
+  :config
+  (set-company-backend! 'python-mode 'company-lsp)
+)
 
 ;; LSP-Flycheck
 (require 'lsp-ui-flycheck)
@@ -408,12 +479,44 @@ and a backlink to the function and the file."
   (condition-case nil
       (lsp-ccls-enable)
     (user-error nil)))
-  (use-package ccls
+
+(use-package ccls
     :commands lsp-ccls-enable
-:init (add-hook 'c-mode-common-hook #'ccls//enable))
+    :init (add-hook 'c-mode-common-hook #'ccls//enable))
+
+;; (def-package! clang-format
+;;   :commands (clang-format-region)
+;;   )
+
+;; (def-package! ccls
+;;   :load-path "~/Dev/Emacs/emacs-ccls"
+;;   :defer t
+;;   :init (add-hook! (c-mode c++-mode cuda-mode objc-mode) #'+ccls//enable)
+;;   :config
+;;   ;; overlay is slow
+;;   ;; Use https://github.com/emacs-mirror/emacs/commits/feature/noverlay
+;;   (setq ccls-sem-highlight-method 'font-lock)
+;;   (add-hook 'lsp-after-open-hook #'ccls-code-lens-mode)
+;;   (ccls-use-default-rainbow-sem-highlight)
+;;   ;; https://github.com/maskray/ccls/blob/master/src/config.h
+;;   (setq
+;;    ccls-extra-init-params
+;;    `(:clang (:extraArgs ["--gcc-toolchain=/usr"]
+;;              :pathMappings ,+ccls-path-mappings)
+;;             :completion
+;;             (:include
+;;              (:blacklist
+;;               ["^/usr/(local/)?include/c\\+\\+/[0-9\\.]+/(bits|tr1|tr2|profile|ext|debug)/"
+;;                "^/usr/(local/)?include/c\\+\\+/v1/"
+;;                ]))
+;;             :index (:initialBlacklist ,+ccls-initial-blacklist :trackDependency 1)))
+
+;;   (evil-set-initial-state 'ccls-tree-mode 'emacs)
+;;   (set-company-backend! '(c-mode c++-mode cuda-mode objc-mode) 'company-lsp)
+;; )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; CCLS
+;; GDB
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Open debugging window style
 (setq gdb-many-windows t)
