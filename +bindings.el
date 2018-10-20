@@ -1,4 +1,8 @@
-;;; private/boy/+bindings.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/+bindings.el -*- lexical-binding: t; -*-
+;;
+;; This +bindings.el is heavily influenced and initially based upon the
+;; +bindings.el of UndeadKernel.
+;; https://github.com/UndeadKernel/emacs_doom_private
 
 ;; Change the default key of persp-mode to avoid conflicts with projectile.
 (setq persp-keymap-prefix (kbd "C-c e")
@@ -7,14 +11,14 @@
 (map!
  "M-x"           #'execute-extended-command
  "C-x C-b"       #'ibuffer-list-buffers
- "M-n"           #'+boy/down-scroll
- "M-p"           #'+boy/up-scroll
- "M-d"           #'+boy/delete-word
- "<M-backspace>" #'+boy/backward-delete-word
- "C-k"           #'+boy/kill-line
- "C-M-q"         #'+boy/unfill-paragraph
- "S-<f1>"        #'+boy/macro-on
- "<f1>"          #'call-last-kbd-macro
+ ;"M-d"           #'+boy/delete-word
+ ;"<M-backspace>" #'+boy/backward-delete-word
+ ;"C-k"           #'+boy/kill-line
+ ;"S-<f1>"        #'+boy/macro-on
+ ;"<f1>"          #'call-last-kbd-macro
+ ;; Lookup
+ "<home>"        #'+lookup/definition
+ "<prior>"       #'pop-tag-mark
  ;; Quick access to magit-status (in addition to C-c v menu)
  "C-x g"         #'magit-status
  ;; Editor related bindings
@@ -56,12 +60,6 @@
  (:prefix "C-c d"
    "d" #'+doom-dashboard/open
    "f" #'recentf-open-files
-   (:when (featurep! :ui neotree)
-     "n" #'+neotree/open
-     "N" #'neotree/find-this-file)
-   (:when (featurep! :ui treemacs)
-     "n" #'+treemacs/toggle
-     "N" #'+treemacs/find-file)
    "o" #'+popup/other
    "t" #'+popup/toggle
    "c" #'+popup/close
@@ -85,9 +83,9 @@
    "c"     #'org-capture
    "C"     (λ! (require 'org-capture) (call-interactively #'org-capture-goto-target))
    "b"     #'org-iswitchb
-   "e l b" #'org-beamer-export-to-latex
-   "e l B" #'org-beamer-export-as-latex
-   "e l P" #'org-beamer-export-to-pdf
+   ;; "e l b" #'org-beamer-export-to-latex
+   ;; "e l B" #'org-beamer-export-as-latex
+   ;; "e l P" #'org-beamer-export-to-pdf
    "l"     #'org-store-link
    "b"     #'+boy/org-babel-hydra/body)
  ;; Snippets
@@ -102,21 +100,22 @@
    :desc "Use Temp Template"     "e" #'aya-expand)
  ;; Version control bindings
  (:prefix "C-c v"
-   :desc "Magit status"          "g" #'magit-status
    :desc "Browse issues tracker" "i" #'+vc/git-browse-issues
    :desc "Browse remote"         "o" #'+vc/git-browse
-   :desc "Magit commit"          "c" #'magit-commit
-   :desc "Magit blame"           "b" #'magit-blame
-   :desc "Initialize repo"       "I" #'magit-init
-   :desc "Magit buffer log"      "l" #'magit-log-buffer-file
-   :desc "List repositories"     "L" #'magit-list-repositories
+   :desc "Diff current file"     "d" #'magit-diff-buffer-file
    :desc "Git revert hunk"       "r" #'git-gutter:revert-hunk
-   :desc "Git stage hunk"        "s" #'git-gutter:stage-hunk
    :desc "Git stage file"        "S" #'magit-stage-file
+   :desc "Git stage hunk"        "s" #'git-gutter:stage-hunk
    :desc "Git time machine"      "t" #'git-timemachine-toggle
    :desc "Git unstage file"      "U" #'magit-unstage-file
+   :desc "Initialize repo"       "I" #'magit-init
+   :desc "List repositories"     "L" #'magit-list-repositories
+   :desc "Magit blame"           "b" #'magit-blame
+   :desc "Magit buffer log"      "l" #'magit-log-buffer-file
+   :desc "Magit commit"          "c" #'magit-commit
+   :desc "Magit status"          "g" #'magit-status
    :desc "Next hunk"             "]" #'git-gutter:next-hunk
-   :desc "Previous hunk"         "[" #'git-gutter:previous-hunk)
+   :desc "Previous hunk" "[" #'git-gutter:previous-hunk)
  ;; Working with windows, workgroups and stuff.
  (:prefix "C-c w"
    "d" #'+workspace/display
@@ -148,7 +147,6 @@
 
 
  ;; Misc plugins
- "<f9>"    #'+neotree/open
  "C-="     #'er/expand-region
  "C-c ."   #'goto-last-change ; requires private package 'goto-last-change'
  "C-c p p" #'projectile-switch-project
@@ -206,26 +204,6 @@
      "C-n"        #'company-search-repeat-forward
      "C-p"        #'company-search-repeat-backward
      "C-s"        (λ! (company-search-abort) (company-filter-candidates))))
- ;; NeoTree bindings
- (:after neotree
-   :map neotree-mode-map
-   "q"       #'neotree-hide
-   [return]  #'neotree-enter
-   "RET"     #'neotree-enter
-   "SPC"     #'neotree-quick-look
-   "v"       #'neotree-enter-vertical-split
-   "s"       #'neotree-enter-horizontal-split
-   "c"       #'neotree-create-node
-   "D"       #'neotree-delete-node
-   "g"       #'neotree-refresh
-   "r"       #'neotree-rename-node
-   "R"       #'neotree-refresh
-   "h"       #'+neotree/collapse-or-up
-   "l"       #'+neotree/expand-or-open
-   "n"       #'neotree-next-line
-   "p"       #'neotree-previous-line
-   "N"       #'neotree-select-next-sibling-node
-   "P"       #'neotree-select-previous-sibling-node)
  ;; Refactoring and compilation
  (:map prog-mode-map
    "M-RET" #'emr-show-refactor-menu)
@@ -279,27 +257,15 @@
    (:map magit-mode-map
      ;; Don't let Tab binding in my bindings conflict with Tab in magit
      "<tab>" #'magit-section-toggle))
- ;; latex
- (:after latex
-   (:when (not (or (null boy--synonyms-key) (string= "" boy--synonyms-key)))
-     ("C-c y" #'www-synonyms-insert-synonym))
-   (:map LaTeX-mode-map
-     ;; Do not overwrite my goto-last-change
-     "C-c ."   nil
-     ;; Replace LaTeX-section with a version that inserts '%' after the section macro
-     "C-c C-s" #'+boy/latex-section))
- ;; ein notebokks
- (:after ein:notebook-multilang
-   (:map ein:notebook-multilang-mode-map
-     "C-c h" #'+ein/hydra/body))
+ ;; undo-tree
+ (:after undo-tree
+   (:map undo-tree-map
+     "C-x <backspace>" #'undo-tree-visualize
+     "C-x u"           #'undo-tree-undo))
  )
 
-
-(which-key-add-key-based-replacements "C-c !"   "checking")
-(which-key-add-key-based-replacements "C-c d p" "doom popups")
 (which-key-add-key-based-replacements "C-c d"   "doom")
 (which-key-add-key-based-replacements "C-c e"   "perspective")
-(which-key-add-key-based-replacements "C-c m"   "mail")
 (which-key-add-key-based-replacements "C-c o a" "org agenda")
 (which-key-add-key-based-replacements "C-c o e" "org export")
 (which-key-add-key-based-replacements "C-c o"   "org")
