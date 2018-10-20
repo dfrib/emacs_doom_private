@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: expect
-# uuid: ex
-# type: command
-# --
-(%alias "expect")

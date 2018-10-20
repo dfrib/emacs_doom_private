@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: graffito
-# key: gr
-# --
-\graffito{$1}$0

@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: :and-call-through ...
-# key: act
-# condition: (%without-trigger (eq (char-before) ?:))
-# --
-and-call-through

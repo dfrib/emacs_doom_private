@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: :to-have-been-called-with ...
-# key: bcw
-# condition: (%without-trigger (eq (char-before) ?:))
-# --
-to-have-been-called-with ${1:args...}

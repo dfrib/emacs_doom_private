@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: :to-have-been-called ...
-# key: bc
-# condition: (%without-trigger (eq (char-before) ?:))
-# --
-to-have-been-called

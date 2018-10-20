@@ -1,6 +1,0 @@
-# -*- mode: snippet -*-
-# name: :and-return-value ...
-# key: arv
-# condition: (%without-trigger (eq (char-before) ?:))
-# --
-and-return-value ${1:value}

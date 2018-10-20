@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: after-all ...
-# key: afa
-# --
-(after-all ${1:`(!%)`})

@@ -1,5 +1,0 @@
-# -*- mode: snippet -*-
-# name: ipython-header
-# key: ipyh
-# --
-#+PROPERTY: header-args:ipython :session :async t :exports both :results raw drawer
