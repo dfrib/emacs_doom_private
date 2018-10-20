@@ -3,6 +3,7 @@
 ;; This +bindings.el is heavily influenced and initially based upon the
 ;; +bindings.el of UndeadKernel.
 ;; https://github.com/UndeadKernel/emacs_doom_private
+;; -------------------------------------------------------------------------- ;;
 
 ;; Change the default key of persp-mode to avoid conflicts with projectile.
 (setq persp-keymap-prefix (kbd "C-c e")
@@ -80,8 +81,8 @@
    "a t"   #'org-todo-list
    "a m"   #'org-tags-view
    "a v"   #'org-search-view
-   "c"     #'org-capture
-   "C"     (λ! (require 'org-capture) (call-interactively #'org-capture-goto-target))
+   ;"c"     #'org-capture
+   "c"     (λ! (require 'org-capture) (call-interactively #'org-capture-goto-target))
    "b"     #'org-iswitchb
    ;; "e l b" #'org-beamer-export-to-latex
    ;; "e l B" #'org-beamer-export-as-latex

@@ -1,4 +1,4 @@
-;;; init.el -*- lexical-binding: t; -*-
+;;; ~/.doom.d/init.el -*- lexical-binding: t; -*-
 
 ;; Prevents the unstyled mode-line flash at startup
 (setq-default mode-line-format nil)

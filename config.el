@@ -23,6 +23,15 @@
 (tool-bar-mode 0)
 (set-scroll-bar-mode nil)
 
+;; Maximize first frame
+(set-frame-parameter nil 'fullscreen 'maximized)
+
+;; File names relative to project (not root)
+(setq +doom-modeline-buffer-file-name-style 'relative-from-project)
+
+;; Don't ask when killing emacs
+(setq confirm-kill-emacs nil)
+
 ;; Resize windows interactively.
 (def-package! resize-window
   :commands (resize-window))
@@ -58,11 +67,49 @@
 ;;(setq doom-theme 'doom-sourcerer)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Org-mode
+;; Org-mode and org-capture
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq +org-dir "~/src/org/")
+(setq +org-dir "~/org/")
 
-;; ORG config
+;; Org-capture snippets functions from:
+;; http://www.howardism.org/Technical/Emacs/capturing-content.html
+(require 'which-func)
+
+(defun ha/org-capture-clip-snippet (f)
+  "Given a file, F, this captures the currently selected text
+within an Org EXAMPLE block and a backlink to the file."
+  (with-current-buffer (find-buffer-visiting f)
+    (ha/org-capture-fileref-snippet f "EXAMPLE" "" nil)))
+
+(defun ha/org-capture-code-snippet (f)
+  "Given a file, F, this captures the currently selected text
+within an Org SRC block with a language based on the current mode
+and a backlink to the function and the file."
+  (with-current-buffer (find-buffer-visiting f)
+    (let ((org-src-mode (replace-regexp-in-string "-mode" "" (format "%s" major-mode)))
+          (func-name (which-function)))
+      (ha/org-capture-fileref-snippet f "SRC" org-src-mode func-name))))
+
+(defun ha/org-capture-fileref-snippet (f type headers func-name)
+  (let* ((code-snippet
+          (buffer-substring-no-properties (mark) (- (point) 1)))
+         (file-name   (buffer-file-name))
+         (file-base   (file-name-nondirectory file-name))
+         (line-number (line-number-at-pos (region-beginning)))
+         (initial-txt (if (null func-name)
+                          (format "From [[file:%s::%s][%s]]:"
+                                  file-name line-number file-base)
+                        (format "From ~%s~ (in [[file:%s::%s][%s]]):"
+                                func-name file-name line-number
+                                file-base))))
+    (format "
+   %s
+
+   #+BEGIN_%s %s
+%s
+   #+END_%s" initial-txt type headers code-snippet type)))
+
+;; org config and capture templates
 (after! org
   (setq org-startup-folded nil ; do not start folded
         org-tags-column -100 ; the column to the right to align tags
@@ -71,18 +118,78 @@
         org-ellipsis " ↴ "
         org-bullets-mode 1)
 
-  ;; Custom org-capture templates
-  ;; (add-to-list 'org-capture-templates
-  ;;              '("s" "Snippets"
-  ;;                (file "work/snippets.org") ; target
-  ;;                ))
+  ;; Clear the org-capture-templates before adding new teampltes
+  ;; (Use only custom ones)
+  (setq org-capture-templates 'nil)
 
+  ;; Templates adapted from: https://github.com/niklascarlsson/doom-private
+
+  ;; --- Personal snippets
   (add-to-list 'org-capture-templates
-               '("s" "Snippet"
-                 entry  ; type
-                 (file+headline "work/snippets.org" "SNIPPETs") ; target
-                 "* %u %?\n%i" ; template
-                 :prepend t :kill-buffer t)))
+               '("p" "Personal entries"))
+  ;; Code snippet
+  (add-to-list 'org-capture-templates
+               '("ps" "Code snippet (personal)"  entry
+                 (file "~/org/personal/code/snippets.org")
+                 "* %?\n%(ha/org-capture-code-snippet \"%F\")"))
+
+  ;; Example block snippet
+  (add-to-list 'org-capture-templates
+               '("pe" "Example snippet (personal)"  entry
+                 (file "~/org/personal/example/snippets.org")
+                 "* %?\n%(ha/org-capture-clip-snippet \"%F\")"))
+
+  ;; Work todos on real-life post-its! :) for now...
+
+  ;; Journal
+  (add-to-list 'org-capture-templates
+               '("pj" "Journal (personal)" entry
+                 (file+olp+datetree "~/org/personal/journal.org")
+                 "* %?" :append t))
+
+  ;; --- Work snippets
+  (add-to-list 'org-capture-templates
+               '("w" "Work entries"))
+  ;; Code snippet
+  (add-to-list 'org-capture-templates
+               '("ws" "Code snippet (work)"  entry
+                 (file "~/org/work/code/snippets.org")
+                 "* %?\n%(my/org-capture-code-snippet \"%F\")"))
+
+  ;; Example block snippet
+  (add-to-list 'org-capture-templates
+               '("we" "Example snippet (work)"  entry
+                 (file "~/org/work/example/snippets.org")
+                 "* %?\n%(my/org-capture-clip-snippet \"%F\")"))
+
+  ;; Todo list
+  (add-to-list 'org-capture-templates
+               '("wt" "Todo (work)" entry
+                 (file+headline "~/org/work/todo.org" "Inbox")
+                 "* [ ] %?\n%i" :prepend t :kill-buffer t))
+
+  ;; Journal entry
+  (add-to-list 'org-capture-templates
+               '("wj" "Journal (work)" entry
+                 (file+olp+datetree "~/org/work/journal.org")
+                 "* %?\nEntered on %U\n %i\n %a")))
+
+;; automatically redisplay images generated by babel
+(add-hook 'org-babel-after-execute-hook 'org-redisplay-inline-images)
+
+;; place latex-captions below figures and tables
+(setq org-latex-caption-above nil)
+
+;; TODO(dfrib): Look into org-noter to annotate e.g. PDF document in an external
+;; synched org document.
+;; https://github.com/weirdNox/org-noter
+
+;; TODO(dfrib): Look into org-brain for mapping different concepts written in
+;; in org documents with multiple parents and so on (mind-map style).
+;; https://github.com/Kungsgeten/org-brain
+
+;; Enable eshell in babel blocks
+(load! "+ob-eshell")
 
 ;; Org theme customization
 (add-hook! org-mode
@@ -116,6 +223,11 @@
                           :height unspecified
                           :box unspecified
                           :inherit org-meta-line))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Org-capture
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Personalized bindings
@@ -158,10 +270,11 @@
 (load! "+functions")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; File templates
+;; Yasnippet file templates
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom file templates
-(setq +file-templates-dir "~/.doom.d/templates")
+;; Just place them in ~/.doom.d/snippets - these will take precedence over the
+;; default ones.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Backups and caching
@@ -174,12 +287,24 @@
       version-control t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Elisp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; prettify lambdas in elisp
+(add-hook 'emacs-lisp-mode-hook #'prettify-symbols-mode)
+;; Let the scratch buffer have elisp major mode by default
+;; if set to t it has the same mode as previous buffer
+(setq doom-scratch-buffer-major-mode 'emacs-lisp-mode)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Magit
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (after! magit
   ;; Show differences at the word level when a hunk is selected.
   (setq magit-diff-refine-hunk t))
 (add-hook! magit-mode (visual-line-mode +1))
+
+;; Automatic spellchecking in commit messages
+(add-hook 'git-commit-setup-hook 'git-commit-turn-on-flyspell)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; IBuffer
