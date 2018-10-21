@@ -169,9 +169,7 @@
    "9" (λ! (+workspace/switch-to 8))
    "0" #'+workspace/switch-to-last)
 
-
  ;; Plugins
-
 
  ;; Misc plugins
  "C-="     #'er/expand-region

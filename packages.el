@@ -8,16 +8,13 @@
                    ivy-rtags
                    rtags)
 
-(package! ag)
-
-
+;; lsp and ccls
+(package! ccls)
+(package! company-lsp)
 (package! lsp-mode)
 (package! lsp-ui)
-(package! company-lsp)
-(package! ccls)
-
 (package! lsp-python)
 
+;; misc
+(package! ag)
 (package! resize-window)
-
-;(package! ob-ipython :recipe (:fetcher github :repo "fuxialexander/ob-ipython" :files ("*.el" "*.py")))
