@@ -429,8 +429,8 @@ and a backlink to the function and the file."
   )
 )
 
-(require 'lsp-ui)
-(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+;; (require 'lsp-ui)
+;; (add-hook 'lsp-mode-hook 'lsp-ui-mode)
 
 ;; LSP-Company
 (def-package! company-lsp
@@ -458,9 +458,16 @@ and a backlink to the function and the file."
 ;; CCLS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TODO(dfrib): move the ccls path to private.
+(defun +ccls//enable ()
+  (require 'ccls)
+  (condition-case nil
+      (lsp-ccls-enable)
+    (user-error nil)))
+
 (def-package! ccls
-  :commands (lsp-ccls-enable)
-  :init
+  :commands lsp-ccls-enable
+  ;; run ccls by default in C++ files
+  :init (add-hook! (c-mode c++-mode cuda-mode objc-mode) #'+ccls//enable)
   :config
   (setq ccls-executable (expand-file-name "~/opensource/ccls/Release/ccls")
         ccls-cache-dir (concat doom-cache-dir ".ccls_cached_index")
@@ -471,11 +478,6 @@ and a backlink to the function and the file."
                       :diagnostics (:frequencyMs 5000)))
   (set-company-backend! '(c-mode c++-mode) '(company-lsp))
   )
-;; run ccls by default in C++ files
-(defun ccls//enable ()
-  (condition-case nil
-      (lsp-ccls-enable)
-    (user-error nil)))
 
 ;; Recommended CCLS helpers from
 ;; https://github.com/MaskRay/ccls/wiki/Emacs
@@ -501,41 +503,6 @@ and a backlink to the function and the file."
 ;; (ccls/member 3) => 3 (Func) => member functions / functions in a namespace
 ;; (ccls/member 0) => member variables / variables in a namespace
 ;; (ccls/vars 3) => field or local variable
-
-(use-package ccls
-    :commands lsp-ccls-enable
-    :init (add-hook 'c-mode-common-hook #'ccls//enable))
-
-;; (def-package! clang-format
-;;   :commands (clang-format-region)
-;;   )
-
-;; (def-package! ccls
-;;   :load-path "~/Dev/Emacs/emacs-ccls"
-;;   :defer t
-;;   :init (add-hook! (c-mode c++-mode cuda-mode objc-mode) #'+ccls//enable)
-;;   :config
-;;   ;; overlay is slow
-;;   ;; Use https://github.com/emacs-mirror/emacs/commits/feature/noverlay
-;;   (setq ccls-sem-highlight-method 'font-lock)
-;;   (add-hook 'lsp-after-open-hook #'ccls-code-lens-mode)
-;;   (ccls-use-default-rainbow-sem-highlight)
-;;   ;; https://github.com/maskray/ccls/blob/master/src/config.h
-;;   (setq
-;;    ccls-extra-init-params
-;;    `(:clang (:extraArgs ["--gcc-toolchain=/usr"]
-;;              :pathMappings ,+ccls-path-mappings)
-;;             :completion
-;;             (:include
-;;              (:blacklist
-;;               ["^/usr/(local/)?include/c\\+\\+/[0-9\\.]+/(bits|tr1|tr2|profile|ext|debug)/"
-;;                "^/usr/(local/)?include/c\\+\\+/v1/"
-;;                ]))
-;;             :index (:initialBlacklist ,+ccls-initial-blacklist :trackDependency 1)))
-
-;;   (evil-set-initial-state 'ccls-tree-mode 'emacs)
-;;   (set-company-backend! '(c-mode c++-mode cuda-mode objc-mode) 'company-lsp)
-;; )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GDB
