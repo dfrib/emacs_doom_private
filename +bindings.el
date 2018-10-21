@@ -78,19 +78,45 @@
    ;; "e l P" #'org-beamer-export-to-pdf
    "l"     #'org-store-link
    "b"     #'+boy/org-babel-hydra/body)
- ;; lsp / ccls
+ ;; lsp / ccls related bindings
  (:prefix "C-c c"
+   ;; lsp
    :desc "Rename symbol"           "n" #'lsp-rename
-   :desc "Peek definitions"        "d" #'lsp-ui-peek-find-definitions
-   :desc "Peek references"         "r" #'lsp-ui-peek-find-references
-   :desc "Peek implementation"     "D" #'lsp-ui-peek-find-implementation
-   :desc "Traverse references"     "t" #'+mr/lsp-traverse-hydra/body
-   :desc "Call(ers) hierarchy"     "c" (λ! (ccls-call-hierarchy nil))
-   :desc "Call(ees) hierarchy"     "C" (λ! (ccls-call-hierarchy t))
-   :desc "Member hierarchy"        "m" #'ccls-member-hierarchy
-   :desc "Base inher. hierarchy"   "i" (λ! (ccls-inheritance-hierarchy nil))
-   :desc "Deriv. inher. hierarchy" "I" (λ! (ccls-inheritance-hierarchy t))
-   :desc "Toggle CCLS code lens"   "l" #'ccls-code-lens-mode)
+   :desc "Goto type definition"    "g" #'lsp-goto-type-definition
+   :desc "Peek definitions"        "p" #'lsp-ui-peek-find-definitions
+   :desc "Peek references"         "P" #'lsp-ui-peek-find-references
+   :desc "Peek implementation"   "C-p" #'lsp-ui-peek-find-implementation
+   :desc "Traverse references"     "r" #'+mr/lsp-traverse-hydra/body
+   ;; $ccls/inheritance
+   ;; https://github.com/MaskRay/ccls/blob/master/src/messages/ccls_inheritance.cc
+   :desc "Base (1 level)"          "b" (λ! (ccls/base 1))
+   :desc "Base (3 levels)"         "B" (λ! (ccls/base 3))
+   :desc "Derived (1 level)"       "d" (λ! (ccls/derived 1))
+   :desc "Derived (3 levels)"      "D" (λ! (ccls/derived 3))
+   :desc "Base hierarchy"          "i" (λ! (ccls-inheritance-hierarchy nil))
+   :desc "Derived hierarchy"       "I" (λ! (ccls-inheritance-hierarchy t))
+   ;; $ccls/call
+   ;; https://github.com/MaskRay/ccls/blob/master/src/messages/ccls_call.cc
+   :desc "Caller"                  "c" #'ccls/caller
+   :desc "Callee"                  "C" #'ccls/callee
+   :desc "Caller hierarchy"        "e" (λ! (ccls-call-hierarchy nil))
+   :desc "Callee hierarchy"        "E" (λ! (ccls-call-hierarchy t))
+   ;; $ccls/member
+   ;; 2 (Type) => nested classes/namespace members
+   ;; 3 (Func) => member functions
+   ;; other => member variables
+   ;; https://github.com/MaskRay/ccls/blob/master/src/messages/ccls_member.cc
+   :desc "Member types"            "t" (λ! (ccls/member 2))
+   :desc "Member functions"        "f" (λ! (ccls/member 3))
+   :desc "Member vars (/other)"    "m" (λ! (ccls/member 0))
+   :desc "Member hierarchy"        "M" #'ccls-member-hierarchy
+   ;; $ccls/vars
+   ;; https://github.com/maskray/ccls/blob/master/src/messages/ccls_vars.cc
+   :desc "Vars (field or local)"   "v" (λ! (ccls/vars 3))
+   :desc "Vars (field)"            "V" (λ! (ccls/vars 1))
+   :desc "Vars (any)"            "C-v" (λ! (ccls/vars 7))
+   ;; code lens
+   :desc "Toggle CCLS code lens"   "L" #'ccls-code-lens-mode)
  ;; Snippets
  (:prefix "C-c s"
    :desc "New snippet"           "n" #'yas-new-snippet

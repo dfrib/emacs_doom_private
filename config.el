@@ -225,9 +225,8 @@ and a backlink to the function and the file."
                           :inherit org-meta-line))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Personalized bindings
+;; Personal variables?
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(load! "+bindings")
 
 ;; TODO(dfrib): consider adding a +private.el file which will not be under
 ;; public version control.
@@ -455,6 +454,31 @@ and a backlink to the function and the file."
       (lsp-ccls-enable)
     (user-error nil)))
 
+;; Recommended CCLS helpers from
+;; https://github.com/MaskRay/ccls/wiki/Emacs
+(defun ccls/callee ()
+  (interactive)
+  (lsp-ui-peek-find-custom 'callee "$ccls/call" '(:callee t)))
+(defun ccls/caller ()
+  (interactive)
+  (lsp-ui-peek-find-custom 'caller "$ccls/call"))
+(defun ccls/vars (kind)
+  (lsp-ui-peek-find-custom 'vars "$ccls/vars" `(:kind ,kind)))
+(defun ccls/base (levels)
+  (lsp-ui-peek-find-custom 'base "$ccls/inheritance" `(:levels ,levels)))
+(defun ccls/derived (levels)
+  (lsp-ui-peek-find-custom 'derived "$ccls/inheritance" `(:levels ,levels :derived t)))
+(defun ccls/member (kind)
+  (interactive)
+  (lsp-ui-peek-find-custom 'member "$ccls/member" `(:kind ,kind)))
+;; ccls/vars ccls/base ccls/derived ccls/members have a parameter while others are interactive.
+;; (ccls/base 1)
+;; (ccls/derived 1)
+;; (ccls/member 2) => 2 (Type) => nested classes / types in a namespace
+;; (ccls/member 3) => 3 (Func) => member functions / functions in a namespace
+;; (ccls/member 0) => member variables / variables in a namespace
+;; (ccls/vars 3) => field or local variable
+
 (use-package ccls
     :commands lsp-ccls-enable
     :init (add-hook 'c-mode-common-hook #'ccls//enable))
@@ -495,3 +519,8 @@ and a backlink to the function and the file."
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Open debugging window style
 (setq gdb-many-windows t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Personalized bindings
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(load! "+bindings")
