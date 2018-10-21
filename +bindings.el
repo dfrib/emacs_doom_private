@@ -30,8 +30,6 @@
  "C-x k"         #'doom/kill-this-buffer-in-all-windows
  ;; Switching windows
  "C-x p"         #'+popup/other
- "C-x C-o"       #'+boy/switch-to-last-window
- ;"C-x O"         #'switch-window-then-swap-buffer
  ;; Smart-forward
  "M-<up>"    #'smart-up
  "M-<down>"  #'smart-down
