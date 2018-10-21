@@ -13,7 +13,6 @@
 
 (package! lsp-mode)
 (package! lsp-ui)
-;(package! lsp-ui-peek)
 (package! company-lsp)
 (package! ccls)
 
